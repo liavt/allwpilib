@@ -49,7 +49,7 @@ class ConditionalCommand : public Command {
 
   void _Initialize() override;
   void _Cancel() override;
-  bool IsFinished() override;
+  bool IsFinished() const override;
   void _Interrupted() override;
 
  private:

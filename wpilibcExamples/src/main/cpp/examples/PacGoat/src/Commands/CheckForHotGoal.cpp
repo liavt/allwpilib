@@ -14,6 +14,6 @@ CheckForHotGoal::CheckForHotGoal(double time) {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool CheckForHotGoal::IsFinished() {
+bool CheckForHotGoal::IsFinished() const {
 	return IsTimedOut() || Robot::shooter.GoalIsHot();
 }

@@ -21,7 +21,7 @@ void MyAutoCommand::Initialize() {}
 void MyAutoCommand::Execute() {}
 
 // Make this return true when this Command no longer needs to run execute()
-bool MyAutoCommand::IsFinished() {
+bool MyAutoCommand::IsFinished() const {
 	return false;
 }
 

@@ -16,6 +16,6 @@ class TankDriveWithJoystick : public frc::Command {
 public:
 	TankDriveWithJoystick();
 	void Execute() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 	void End() override;
 };

@@ -49,7 +49,7 @@ void DriveForward::Execute() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool DriveForward::IsFinished() {
+bool DriveForward::IsFinished() const {
 	return (std::fabs(m_error) <= kTolerance) || IsTimedOut();
 }
 

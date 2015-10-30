@@ -17,5 +17,5 @@
 class WaitForBall : public frc::Command {
 public:
 	WaitForBall();
-	bool IsFinished() override;
+	bool IsFinished() const override;
 };

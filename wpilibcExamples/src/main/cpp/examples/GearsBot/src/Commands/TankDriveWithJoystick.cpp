@@ -21,7 +21,7 @@ void TankDriveWithJoystick::Execute() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool TankDriveWithJoystick::IsFinished() {
+bool TankDriveWithJoystick::IsFinished() const {
 	return false;
 }
 

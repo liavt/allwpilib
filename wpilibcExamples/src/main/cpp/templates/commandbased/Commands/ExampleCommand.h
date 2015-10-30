@@ -14,7 +14,7 @@ public:
 	ExampleCommand();
 	void Initialize() override;
 	void Execute() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 	void End() override;
 	void Interrupted() override;
 };

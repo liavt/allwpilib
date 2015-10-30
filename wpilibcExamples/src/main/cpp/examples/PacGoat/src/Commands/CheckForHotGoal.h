@@ -18,5 +18,5 @@
 class CheckForHotGoal : public frc::Command {
 public:
 	explicit CheckForHotGoal(double time);
-	bool IsFinished() override;
+	bool IsFinished() const override;
 };

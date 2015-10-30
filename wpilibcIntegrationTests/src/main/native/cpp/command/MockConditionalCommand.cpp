@@ -39,7 +39,7 @@ void MockConditionalCommand::Initialize() { ++m_initializeCount; }
 
 void MockConditionalCommand::Execute() { ++m_executeCount; }
 
-bool MockConditionalCommand::IsFinished() {
+bool MockConditionalCommand::IsFinished() const {
   ++m_isFinishedCount;
   return ConditionalCommand::IsFinished();
 }

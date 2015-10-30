@@ -22,7 +22,7 @@ class SetDistanceToBox : public frc::Command {
 public:
 	explicit SetDistanceToBox(double distance);
 	void Initialize() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 	void End() override;
 
 	class SetDistanceToBoxPIDSource : public frc::PIDSource {

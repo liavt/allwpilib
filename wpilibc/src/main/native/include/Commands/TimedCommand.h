@@ -25,7 +25,7 @@ class TimedCommand : public Command {
   virtual ~TimedCommand() = default;
 
  protected:
-  bool IsFinished() override;
+  bool IsFinished() const override;
 };
 
 }  // namespace frc

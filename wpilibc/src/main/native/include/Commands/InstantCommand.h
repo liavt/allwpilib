@@ -25,7 +25,7 @@ class InstantCommand : public Command {
   virtual ~InstantCommand() = default;
 
  protected:
-  bool IsFinished() override;
+  bool IsFinished() const override;
 };
 
 }  // namespace frc

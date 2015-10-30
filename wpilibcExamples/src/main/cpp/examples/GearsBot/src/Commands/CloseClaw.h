@@ -17,6 +17,6 @@ class CloseClaw : public frc::Command {
 public:
 	CloseClaw();
 	void Initialize() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 	void End() override;
 };

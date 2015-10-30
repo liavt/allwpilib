@@ -22,7 +22,7 @@ class DriveStraight : public frc::Command {
 public:
 	explicit DriveStraight(double distance);
 	void Initialize() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 	void End() override;
 
 	class DriveStraightPIDSource : public frc::PIDSource {

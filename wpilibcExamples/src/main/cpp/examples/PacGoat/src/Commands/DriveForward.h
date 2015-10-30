@@ -20,7 +20,7 @@ public:
 	DriveForward(double dist, double maxSpeed);
 	void Initialize() override;
 	void Execute() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 	void End() override;
 
 private:

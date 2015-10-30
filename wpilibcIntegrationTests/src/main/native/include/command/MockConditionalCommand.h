@@ -32,7 +32,7 @@ class MockConditionalCommand : public ConditionalCommand {
   bool Condition() override;
   void Initialize() override;
   void Execute() override;
-  bool IsFinished() override;
+  bool IsFinished() const override;
   void End() override;
   void Interrupted() override;
 
@@ -40,7 +40,7 @@ class MockConditionalCommand : public ConditionalCommand {
   bool m_condition = false;
   int32_t m_initializeCount;
   int32_t m_executeCount;
-  int32_t m_isFinishedCount;
+  mutable int32_t m_isFinishedCount;
   int32_t m_endCount;
   int32_t m_interruptedCount;
 };

@@ -20,7 +20,7 @@ void DriveWithJoystick::Execute() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool DriveWithJoystick::IsFinished() {
+bool DriveWithJoystick::IsFinished() const {
 	return false;
 }
 

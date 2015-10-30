@@ -16,4 +16,4 @@ using namespace frc;
  */
 InstantCommand::InstantCommand(const llvm::Twine& name) : Command(name) {}
 
-bool InstantCommand::IsFinished() { return true; }
+bool InstantCommand::IsFinished() const { return true; }

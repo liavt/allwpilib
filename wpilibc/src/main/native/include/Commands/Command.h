@@ -101,7 +101,7 @@ class Command : public ErrorBase, public SendableBase {
    * @return Whether this command is finished.
    * @see IsTimedOut()
    */
-  virtual bool IsFinished() = 0;
+  virtual bool IsFinished() const = 0;
 
   virtual void End();
   virtual void Interrupted();

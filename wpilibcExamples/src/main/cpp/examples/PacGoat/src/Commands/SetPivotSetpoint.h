@@ -18,7 +18,7 @@ class SetPivotSetpoint : public frc::Command {
 public:
 	explicit SetPivotSetpoint(double setpoint);
 	void Initialize() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 
 private:
 	double m_setpoint;

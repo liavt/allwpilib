@@ -20,7 +20,7 @@ void CloseClaw::Initialize() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool CloseClaw::IsFinished() {
+bool CloseClaw::IsFinished() const {
 	return Robot::claw.IsGripping();
 }
 

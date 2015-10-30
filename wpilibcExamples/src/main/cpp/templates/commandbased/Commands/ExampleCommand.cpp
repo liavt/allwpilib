@@ -21,7 +21,7 @@ void ExampleCommand::Initialize() {}
 void ExampleCommand::Execute() {}
 
 // Make this return true when this Command no longer needs to run execute()
-bool ExampleCommand::IsFinished() {
+bool ExampleCommand::IsFinished() const {
 	return false;
 }
 

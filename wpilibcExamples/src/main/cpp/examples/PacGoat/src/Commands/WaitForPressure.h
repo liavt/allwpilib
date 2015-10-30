@@ -16,5 +16,5 @@
 class WaitForPressure : public frc::Command {
 public:
 	WaitForPressure();
-	bool IsFinished() override;
+	bool IsFinished() const override;
 };

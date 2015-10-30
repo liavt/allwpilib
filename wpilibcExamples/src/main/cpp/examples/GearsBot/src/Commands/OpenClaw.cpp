@@ -21,7 +21,7 @@ void OpenClaw::Initialize() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool OpenClaw::IsFinished() {
+bool OpenClaw::IsFinished() const {
 	return IsTimedOut();
 }
 

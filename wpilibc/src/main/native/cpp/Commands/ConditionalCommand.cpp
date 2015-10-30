@@ -78,7 +78,7 @@ void ConditionalCommand::_Cancel() {
   Command::_Cancel();
 }
 
-bool ConditionalCommand::IsFinished() {
+bool ConditionalCommand::IsFinished() const {
   if (m_chosenCommand != nullptr) {
     return m_chosenCommand->IsCompleted();
   } else {

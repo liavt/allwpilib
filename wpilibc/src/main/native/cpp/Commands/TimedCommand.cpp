@@ -28,4 +28,4 @@ TimedCommand::TimedCommand(double timeout) : Command(timeout) {}
 /**
  * Ends command when timed out.
  */
-bool TimedCommand::IsFinished() { return IsTimedOut(); }
+bool TimedCommand::IsFinished() const { return IsTimedOut(); }

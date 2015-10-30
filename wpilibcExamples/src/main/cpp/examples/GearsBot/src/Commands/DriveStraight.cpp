@@ -24,7 +24,7 @@ void DriveStraight::Initialize() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool DriveStraight::IsFinished() {
+bool DriveStraight::IsFinished() const {
 	return m_pid.OnTarget();
 }
 

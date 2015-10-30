@@ -24,6 +24,6 @@ void SetElevatorSetpoint::Initialize() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool SetElevatorSetpoint::IsFinished() {
+bool SetElevatorSetpoint::IsFinished() const {
 	return Robot::elevator.OnTarget();
 }

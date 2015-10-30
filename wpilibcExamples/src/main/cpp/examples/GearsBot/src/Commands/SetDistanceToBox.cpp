@@ -26,7 +26,7 @@ void SetDistanceToBox::Initialize() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool SetDistanceToBox::IsFinished() {
+bool SetDistanceToBox::IsFinished() const {
 	return m_pid.OnTarget();
 }
 

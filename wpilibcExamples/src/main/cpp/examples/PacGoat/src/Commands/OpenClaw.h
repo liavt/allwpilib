@@ -16,5 +16,5 @@ class OpenClaw : public frc::Command {
 public:
 	OpenClaw();
 	void Initialize() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 };

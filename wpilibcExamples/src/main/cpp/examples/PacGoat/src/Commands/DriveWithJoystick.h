@@ -17,6 +17,6 @@ class DriveWithJoystick : public frc::Command {
 public:
 	DriveWithJoystick();
 	void Execute() override;
-	bool IsFinished() override;
+	bool IsFinished() const override;
 	void End() override;
 };
