@@ -746,3 +746,12 @@ void RobotDrive::StopMotor() {
   if (m_rearRightMotor != nullptr) m_rearRightMotor->StopMotor();
   m_safetyHelper->Feed();
 }
+
+int RobotDrive::GetNumMotors() const {
+  int motors = 0;
+  if (m_frontLeftMotor) motors++;
+  if (m_frontRightMotor) motors++;
+  if (m_rearLeftMotor) motors++;
+  if (m_rearRightMotor) motors++;
+  return motors;
+}

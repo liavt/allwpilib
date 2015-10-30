@@ -459,6 +459,8 @@ int Counter::GetSamplesToAverage() const {
   return samples;
 }
 
+int Counter::GetFPGAIndex() const { return m_index; }
+
 /**
  * Set the Samples to Average which specifies the number of samples of the timer
  * to average when calculating the period. Perform averaging to account for

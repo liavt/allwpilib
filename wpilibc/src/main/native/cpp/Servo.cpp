@@ -102,3 +102,11 @@ void Servo::InitSendable(SendableBuilder& builder) {
   builder.AddDoubleProperty("Value", [=]() { return Get(); },
                             [=](double value) { Set(value); });
 }
+
+double Servo::GetMaxAngle() { return kMaxServoAngle; }
+
+double Servo::GetMinAngle() { return kMinServoAngle; }
+
+double Servo::GetServoAngleRange() const {
+  return kMaxServoAngle - kMinServoAngle;
+}

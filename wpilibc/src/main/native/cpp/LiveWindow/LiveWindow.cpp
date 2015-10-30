@@ -73,11 +73,6 @@ LiveWindow* LiveWindow::GetInstance() {
  */
 LiveWindow::LiveWindow() : m_impl(new Impl) {}
 
-bool LiveWindow::IsEnabled() const {
-  std::lock_guard<wpi::mutex> lock(m_impl->mutex);
-  return m_impl->liveWindowEnabled;
-}
-
 /**
  * Change the enabled status of LiveWindow.
  *
@@ -99,6 +94,11 @@ void LiveWindow::SetEnabled(bool enabled) {
   m_impl->startLiveWindow = enabled;
   m_impl->liveWindowEnabled = enabled;
   m_impl->enabledEntry.SetBoolean(enabled);
+}
+
+bool LiveWindow::IsEnabled() const {
+  std::lock_guard<wpi::mutex> lock(m_impl->mutex);
+  return m_impl->liveWindowEnabled;
 }
 
 /**

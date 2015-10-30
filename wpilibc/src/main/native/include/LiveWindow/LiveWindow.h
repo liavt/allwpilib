@@ -67,8 +67,8 @@ class LiveWindow {
   void DisableTelemetry(Sendable* component);
   void DisableAllTelemetry();
 
-  bool IsEnabled() const;
   void SetEnabled(bool enabled);
+  bool IsEnabled() const;
 
   void UpdateValues();
 

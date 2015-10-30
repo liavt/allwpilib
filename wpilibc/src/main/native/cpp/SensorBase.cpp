@@ -29,6 +29,8 @@ const int SensorBase::kPwmChannels = HAL_GetNumPWMChannels();
 const int SensorBase::kRelayChannels = HAL_GetNumRelayHeaders();
 const int SensorBase::kPDPChannels = HAL_GetNumPDPChannels();
 
+int SensorBase::GetDefaultSolenoidModule() { return 0; }
+
 /**
  * Check that the solenoid module number is valid.
  *

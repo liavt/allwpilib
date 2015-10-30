@@ -152,6 +152,8 @@ void PWM::GetRawBounds(int* max, int* deadbandMax, int* center,
   wpi_setErrorWithContext(status, HAL_GetErrorMessage(status));
 }
 
+int PWM::GetChannel() const { return m_channel; }
+
 /**
  * Set the PWM value based on a position.
  *

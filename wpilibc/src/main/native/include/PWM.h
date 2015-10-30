@@ -71,7 +71,7 @@ class PWM : public ErrorBase, public SendableBase {
                     int min);
   void GetRawBounds(int32_t* max, int32_t* deadbandMax, int32_t* center,
                     int32_t* deadbandMin, int32_t* min);
-  int GetChannel() const { return m_channel; }
+  int GetChannel() const;
 
  protected:
   void InitSendable(SendableBuilder& builder) override;

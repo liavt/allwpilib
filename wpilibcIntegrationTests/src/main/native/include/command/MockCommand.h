@@ -13,20 +13,21 @@ namespace frc {
 
 class MockCommand : public Command {
  public:
+  MockCommand() = default;
   explicit MockCommand(Subsystem*);
-  MockCommand();
-  int32_t GetInitializeCount() { return m_initializeCount; }
-  bool HasInitialized();
 
-  int32_t GetExecuteCount() { return m_executeCount; }
-  int32_t GetIsFinishedCount() { return m_isFinishedCount; }
-  bool IsHasFinished() { return m_hasFinished; }
-  void SetHasFinished(bool hasFinished) { m_hasFinished = hasFinished; }
-  int32_t GetEndCount() { return m_endCount; }
-  bool HasEnd();
+  int32_t GetInitializeCount() const;
+  bool HasInitialized() const;
 
-  int32_t GetInterruptedCount() { return m_interruptedCount; }
-  bool HasInterrupted();
+  int32_t GetExecuteCount() const;
+  int32_t GetIsFinishedCount() const;
+  bool IsHasFinished() const;
+  void SetHasFinished(bool hasFinished);
+  int32_t GetEndCount() const;
+  bool HasEnd() const;
+
+  int32_t GetInterruptedCount() const;
+  bool HasInterrupted() const;
   void ResetCounters();
 
  protected:
@@ -37,12 +38,12 @@ class MockCommand : public Command {
   void Interrupted() override;
 
  private:
-  int32_t m_initializeCount;
-  int32_t m_executeCount;
-  int32_t m_isFinishedCount;
-  bool m_hasFinished;
-  int32_t m_endCount;
-  int32_t m_interruptedCount;
+  int32_t m_initializeCount = 0;
+  int32_t m_executeCount = 0;
+  int32_t m_isFinishedCount = 0;
+  bool m_hasFinished = false;
+  int32_t m_endCount = 0;
+  int32_t m_interruptedCount = 0;
 };
 
 }  // namespace frc

@@ -92,6 +92,44 @@ DriverStation& DriverStation::GetInstance() {
 }
 
 /**
+ * Only to be used to tell the Driver Station what code you claim to be
+ * executing for diagnostic purposes only.
+ *
+ * @param entering If true, starting disabled code; if false, leaving disabled
+ *                 code.
+ */
+void DriverStation::InDisabled(bool entering) { m_userInDisabled = entering; }
+
+/**
+ * Only to be used to tell the Driver Station what code you claim to be
+ * executing for diagnostic purposes only.
+ *
+ * @param entering If true, starting autonomous code; if false, leaving
+ *                 autonomous code.
+ */
+void DriverStation::InAutonomous(bool entering) {
+  m_userInAutonomous = entering;
+}
+
+/**
+ * Only to be used to tell the Driver Station what code you claim to be
+ * executing for diagnostic purposes only.
+ *
+ * @param entering If true, starting teleop code; if false, leaving teleop code.
+ */
+void DriverStation::InOperatorControl(bool entering) {
+  m_userInTeleop = entering;
+}
+
+/**
+ * Only to be used to tell the Driver Station what code you claim to be
+ * executing for diagnostic purposes only.
+ *
+ * @param entering If true, starting test code; if false, leaving test code.
+ */
+void DriverStation::InTest(bool entering) { m_userInTest = entering; }
+
+/**
  * Report an error to the DriverStation messages window.
  *
  * The error is also printed to the program console.

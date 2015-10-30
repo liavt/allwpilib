@@ -52,8 +52,8 @@ class Ultrasonic : public SensorBase, public PIDSource {
   static void SetAutomaticMode(bool enabling);
   double GetRangeInches() const;
   double GetRangeMM() const;
-  bool IsEnabled() const { return m_enabled; }
-  void SetEnabled(bool enable) { m_enabled = enable; }
+  bool IsEnabled() const;
+  void SetEnabled(bool enable);
 
   double PIDGet() override;
   void SetPIDSourceType(PIDSourceType pidSource) override;

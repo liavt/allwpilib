@@ -125,14 +125,7 @@ class RobotDrive : public MotorSafety, public ErrorBase {
   std::unique_ptr<MotorSafetyHelper> m_safetyHelper;
 
  private:
-  int GetNumMotors() {
-    int motors = 0;
-    if (m_frontLeftMotor) motors++;
-    if (m_frontRightMotor) motors++;
-    if (m_rearLeftMotor) motors++;
-    if (m_rearRightMotor) motors++;
-    return motors;
-  }
+  int GetNumMotors() const;
 };
 
 }  // namespace frc

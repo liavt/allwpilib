@@ -9,24 +9,31 @@
 
 using namespace frc;
 
-MockCommand::MockCommand(Subsystem* subsys) : MockCommand() {
+MockCommand::MockCommand(Subsystem* subsys) {
   Requires(subsys);
 }
 
-MockCommand::MockCommand() {
-  m_initializeCount = 0;
-  m_executeCount = 0;
-  m_isFinishedCount = 0;
-  m_hasFinished = false;
-  m_endCount = 0;
-  m_interruptedCount = 0;
+int32_t MockCommand::GetInitializeCount() const { return m_initializeCount; }
+
+bool MockCommand::HasInitialized() const { return GetInitializeCount() > 0; }
+
+int32_t MockCommand::GetExecuteCount() const { return m_executeCount; }
+
+int32_t MockCommand::GetIsFinishedCount() const { return m_isFinishedCount; }
+
+bool MockCommand::IsHasFinished() const { return m_hasFinished; }
+
+void MockCommand::SetHasFinished(bool hasFinished) {
+  m_hasFinished = hasFinished;
 }
 
-bool MockCommand::HasInitialized() { return GetInitializeCount() > 0; }
+int32_t MockCommand::GetEndCount() const { return m_endCount; }
 
-bool MockCommand::HasEnd() { return GetEndCount() > 0; }
+bool MockCommand::HasEnd() const { return GetEndCount() > 0; }
 
-bool MockCommand::HasInterrupted() { return GetInterruptedCount() > 0; }
+int32_t MockCommand::GetInterruptedCount() const { return m_interruptedCount; }
+
+bool MockCommand::HasInterrupted() const { return GetInterruptedCount() > 0; }
 
 void MockCommand::Initialize() { ++m_initializeCount; }
 

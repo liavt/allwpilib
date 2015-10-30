@@ -29,7 +29,7 @@ class SensorBase : public ErrorBase, public SendableBase {
   SensorBase(const SensorBase&) = delete;
   SensorBase& operator=(const SensorBase&) = delete;
 
-  static int GetDefaultSolenoidModule() { return 0; }
+  static int GetDefaultSolenoidModule();
 
   static bool CheckSolenoidModule(int moduleNumber);
   static bool CheckDigitalChannel(int channel);

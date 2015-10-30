@@ -89,7 +89,7 @@ class Counter : public SensorBase, public CounterBase {
 
   void SetSamplesToAverage(int samplesToAverage);
   int GetSamplesToAverage() const;
-  int GetFPGAIndex() const { return m_index; }
+  int GetFPGAIndex() const;
 
   void InitSendable(SendableBuilder& builder) override;
 

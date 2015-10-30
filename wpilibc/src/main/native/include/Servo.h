@@ -26,13 +26,13 @@ class Servo : public SafePWM {
   double Get() const;
   void SetAngle(double angle);
   double GetAngle() const;
-  static double GetMaxAngle() { return kMaxServoAngle; }
-  static double GetMinAngle() { return kMinServoAngle; }
+  static double GetMaxAngle();
+  static double GetMinAngle();
 
   void InitSendable(SendableBuilder& builder) override;
 
  private:
-  double GetServoAngleRange() const { return kMaxServoAngle - kMinServoAngle; }
+  double GetServoAngleRange() const;
 
   static constexpr double kMaxServoAngle = 180.0;
   static constexpr double kMinServoAngle = 0.0;

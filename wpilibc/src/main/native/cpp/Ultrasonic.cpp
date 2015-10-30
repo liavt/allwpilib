@@ -276,6 +276,10 @@ double Ultrasonic::GetRangeInches() const {
  */
 double Ultrasonic::GetRangeMM() const { return GetRangeInches() * 25.4; }
 
+bool Ultrasonic::IsEnabled() const { return m_enabled; }
+
+void Ultrasonic::SetEnabled(bool enable) { m_enabled = enable; }
+
 /**
  * Get the range in the current DistanceUnit for the PIDSource base object.
  *
