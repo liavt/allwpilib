@@ -30,7 +30,7 @@ public:
 
 private:
 	Autonomous m_autonomousCommand;
-	frc::LiveWindow& m_lw = *frc::LiveWindow::GetInstance();
+	frc::LiveWindow& m_lw = frc::LiveWindow::GetInstance();
 
 	void RobotInit() override;
 	void AutonomousInit() override;

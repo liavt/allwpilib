@@ -17,13 +17,13 @@ using namespace frc;
  * @param addLiveWindow if true, add this Sendable to LiveWindow
  */
 SendableBase::SendableBase(bool addLiveWindow) {
-  if (addLiveWindow) LiveWindow::GetInstance()->Add(this);
+  if (addLiveWindow) LiveWindow::GetInstance().Add(this);
 }
 
 /**
  * Free the resources used by this object.
  */
-SendableBase::~SendableBase() { LiveWindow::GetInstance()->Remove(this); }
+SendableBase::~SendableBase() { LiveWindow::GetInstance().Remove(this); }
 
 std::string SendableBase::GetName() const {
   std::lock_guard<wpi::mutex> lock(m_mutex);
@@ -51,7 +51,7 @@ void SendableBase::SetSubsystem(const llvm::Twine& subsystem) {
  * @param child child component
  */
 void SendableBase::AddChild(std::shared_ptr<Sendable> child) {
-  LiveWindow::GetInstance()->AddChild(this, child);
+  LiveWindow::GetInstance().AddChild(this, child);
 }
 
 /**
@@ -60,7 +60,7 @@ void SendableBase::AddChild(std::shared_ptr<Sendable> child) {
  * @param child child component
  */
 void SendableBase::AddChild(void* child) {
-  LiveWindow::GetInstance()->AddChild(this, child);
+  LiveWindow::GetInstance().AddChild(this, child);
 }
 
 /**

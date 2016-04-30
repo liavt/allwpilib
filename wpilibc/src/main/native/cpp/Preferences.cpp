@@ -36,9 +36,9 @@ Preferences::Preferences()
  *
  * @return pointer to the {@link Preferences}
  */
-Preferences* Preferences::GetInstance() {
+Preferences& Preferences::GetInstance() {
   static Preferences instance;
-  return &instance;
+  return instance;
 }
 
 /**

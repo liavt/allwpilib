@@ -25,7 +25,7 @@ class LiveWindow {
   LiveWindow(const LiveWindow&) = delete;
   LiveWindow& operator=(const LiveWindow&) = delete;
 
-  static LiveWindow* GetInstance();
+  static LiveWindow& GetInstance();
 
   WPI_DEPRECATED("no longer required")
   void Run() { UpdateValues(); }

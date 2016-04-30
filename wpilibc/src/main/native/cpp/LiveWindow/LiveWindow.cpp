@@ -61,9 +61,9 @@ LiveWindow::Impl::Impl()
  * This is a singleton to guarantee that there is only a single instance
  * regardless of how many times GetInstance is called.
  */
-LiveWindow* LiveWindow::GetInstance() {
+LiveWindow& LiveWindow::GetInstance() {
   static LiveWindow instance;
-  return &instance;
+  return instance;
 }
 
 /**
@@ -86,15 +86,15 @@ bool LiveWindow::IsEnabled() const {
 void LiveWindow::SetEnabled(bool enabled) {
   std::lock_guard<wpi::mutex> lock(m_impl->mutex);
   if (m_impl->liveWindowEnabled == enabled) return;
-  Scheduler* scheduler = Scheduler::GetInstance();
+  auto& scheduler = Scheduler::GetInstance();
   if (enabled) {
-    scheduler->SetEnabled(false);
-    scheduler->RemoveAll();
+    scheduler.SetEnabled(false);
+    scheduler.RemoveAll();
   } else {
     for (auto& i : m_impl->components) {
       i.getSecond().builder.StopLiveWindowMode();
     }
-    scheduler->SetEnabled(true);
+    scheduler.SetEnabled(true);
   }
   m_impl->startLiveWindow = enabled;
   m_impl->liveWindowEnabled = enabled;

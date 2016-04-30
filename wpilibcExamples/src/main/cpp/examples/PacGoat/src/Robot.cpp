@@ -42,7 +42,7 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-	frc::Scheduler::GetInstance()->Run();
+	frc::Scheduler::GetInstance().Run();
 	Log();
 }
 
@@ -58,7 +58,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-	frc::Scheduler::GetInstance()->Run();
+	frc::Scheduler::GetInstance().Run();
 	Log();
 }
 

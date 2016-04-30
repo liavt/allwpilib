@@ -51,7 +51,7 @@ private:
 	frc::DifferentialDrive m_robotDrive{m_left, m_right};
 
 	frc::Joystick m_stick{0};
-	frc::LiveWindow& m_lw = *frc::LiveWindow::GetInstance();
+	frc::LiveWindow& m_lw = frc::LiveWindow::GetInstance();
 	frc::Timer m_timer;
 };
 

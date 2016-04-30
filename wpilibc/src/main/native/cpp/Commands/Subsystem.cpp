@@ -22,7 +22,7 @@ using namespace frc;
  */
 Subsystem::Subsystem(const llvm::Twine& name) {
   SetName(name, name);
-  Scheduler::GetInstance()->RegisterSubsystem(this);
+  Scheduler::GetInstance().RegisterSubsystem(this);
 }
 
 /**
@@ -176,7 +176,7 @@ void Subsystem::AddChild(const llvm::Twine& name, Sendable* child) {
  */
 void Subsystem::AddChild(const llvm::Twine& name, Sendable& child) {
   child.SetName(GetSubsystem(), name);
-  LiveWindow::GetInstance()->Add(&child);
+  LiveWindow::GetInstance().Add(&child);
 }
 
 /**
@@ -200,7 +200,7 @@ void Subsystem::AddChild(Sendable* child) { AddChild(*child); }
  */
 void Subsystem::AddChild(Sendable& child) {
   child.SetSubsystem(GetSubsystem());
-  LiveWindow::GetInstance()->Add(&child);
+  LiveWindow::GetInstance().Add(&child);
 }
 
 void Subsystem::InitSendable(SendableBuilder& builder) {

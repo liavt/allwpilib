@@ -154,7 +154,7 @@ void IterativeRobotBase::LoopFunc() {
     // Call DisabledInit() if we are now just entering disabled mode from
     // either a different mode or from power-on.
     if (m_lastMode != Mode::kDisabled) {
-      LiveWindow::GetInstance()->SetEnabled(false);
+      LiveWindow::GetInstance().SetEnabled(false);
       DisabledInit();
       m_lastMode = Mode::kDisabled;
     }
@@ -164,7 +164,7 @@ void IterativeRobotBase::LoopFunc() {
     // Call AutonomousInit() if we are now just entering autonomous mode from
     // either a different mode or from power-on.
     if (m_lastMode != Mode::kAutonomous) {
-      LiveWindow::GetInstance()->SetEnabled(false);
+      LiveWindow::GetInstance().SetEnabled(false);
       AutonomousInit();
       m_lastMode = Mode::kAutonomous;
     }
@@ -174,10 +174,10 @@ void IterativeRobotBase::LoopFunc() {
     // Call TeleopInit() if we are now just entering teleop mode from
     // either a different mode or from power-on.
     if (m_lastMode != Mode::kTeleop) {
-      LiveWindow::GetInstance()->SetEnabled(false);
+      LiveWindow::GetInstance().SetEnabled(false);
       TeleopInit();
       m_lastMode = Mode::kTeleop;
-      Scheduler::GetInstance()->SetEnabled(true);
+      Scheduler::GetInstance().SetEnabled(true);
     }
     HAL_ObserveUserProgramTeleop();
     TeleopPeriodic();
@@ -185,7 +185,7 @@ void IterativeRobotBase::LoopFunc() {
     // Call TestInit() if we are now just entering test mode from
     // either a different mode or from power-on.
     if (m_lastMode != Mode::kTest) {
-      LiveWindow::GetInstance()->SetEnabled(true);
+      LiveWindow::GetInstance().SetEnabled(true);
       TestInit();
       m_lastMode = Mode::kTest;
     }
@@ -194,5 +194,5 @@ void IterativeRobotBase::LoopFunc() {
   }
   RobotPeriodic();
   SmartDashboard::UpdateValues();
-  LiveWindow::GetInstance()->UpdateValues();
+  LiveWindow::GetInstance().UpdateValues();
 }

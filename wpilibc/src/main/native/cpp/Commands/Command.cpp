@@ -158,7 +158,7 @@ void Command::Start() {
         "Can not start a command that is part of a command group");
 
   m_completed = false;
-  Scheduler::GetInstance()->AddCommand(this);
+  Scheduler::GetInstance().AddCommand(this);
 }
 
 /**
