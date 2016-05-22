@@ -20,6 +20,8 @@ Subsystem::Subsystem(const wpi::Twine& name) {
   Scheduler::GetInstance()->RegisterSubsystem(this);
 }
 
+Subsystem::~Subsystem() {}
+
 void Subsystem::SetDefaultCommand(Command* command) {
   if (command == nullptr) {
     m_defaultCommand = nullptr;
@@ -31,7 +33,7 @@ void Subsystem::SetDefaultCommand(Command* command) {
       return;
     }
 
-    m_defaultCommand = command;
+    m_defaultCommand = std::unique_ptr<Command>(command);
   }
 }
 
@@ -40,7 +42,7 @@ Command* Subsystem::GetDefaultCommand() {
     m_initializedDefaultCommand = true;
     InitDefaultCommand();
   }
-  return m_defaultCommand;
+  return m_defaultCommand.get();
 }
 
 wpi::StringRef Subsystem::GetDefaultCommandName() {

@@ -92,7 +92,7 @@ bool CommandGroup::IsInterruptible() const {
 
   if (m_currentCommandIndex != -1 &&
       static_cast<size_t>(m_currentCommandIndex) < m_commands.size()) {
-    Command* cmd = m_commands[m_currentCommandIndex].m_command;
+    Command* cmd = m_commands[m_currentCommandIndex].m_command.get();
     if (!cmd->IsInterruptible()) return false;
   }
 
@@ -156,7 +156,7 @@ void CommandGroup::_Execute() {
 
     switch (entry->m_state) {
       case CommandGroupEntry::kSequence_InSequence:
-        cmd = entry->m_command;
+        cmd = entry->m_command.get();
         if (firstRun) {
           cmd->StartRunning();
           CancelConflicts(cmd);
@@ -176,7 +176,7 @@ void CommandGroup::_Execute() {
         /* Causes scheduler to skip children of current command which require
          * the same subsystems as it
          */
-        CancelConflicts(entry->m_command);
+        CancelConflicts(entry->m_command.get());
         entry->m_command->StartRunning();
 
         // Add current command entry to list of children of this group
@@ -187,7 +187,7 @@ void CommandGroup::_Execute() {
 
   // Run Children
   for (auto& entry : m_children) {
-    auto child = entry->m_command;
+    auto child = entry->m_command.get();
     if (entry->IsTimedOut()) {
       child->_Cancel();
     }
@@ -209,13 +209,13 @@ void CommandGroup::_End() {
   // IsFinished method
   if (m_currentCommandIndex != -1 &&
       static_cast<size_t>(m_currentCommandIndex) < m_commands.size()) {
-    Command* cmd = m_commands[m_currentCommandIndex].m_command;
+    Command* cmd = m_commands[m_currentCommandIndex].m_command.get();
     cmd->_Cancel();
     cmd->Removed();
   }
 
   for (auto& child : m_children) {
-    Command* cmd = child->m_command;
+    Command* cmd = child->m_command.get();
     cmd->_Cancel();
     cmd->Removed();
   }
@@ -226,7 +226,7 @@ void CommandGroup::_Interrupted() { _End(); }
 
 void CommandGroup::CancelConflicts(Command* command) {
   for (auto childIter = m_children.begin(); childIter != m_children.end();) {
-    Command* child = (*childIter)->m_command;
+    Command* child = (*childIter)->m_command.get();
     bool erased = false;
 
     for (auto&& requirement : command->GetRequirements()) {

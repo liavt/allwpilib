@@ -31,6 +31,8 @@ class Subsystem : public ErrorBase, public SendableBase {
    */
   explicit Subsystem(const wpi::Twine& name);
 
+  virtual ~Subsystem() override;
+
   Subsystem(Subsystem&&) = default;
   Subsystem& operator=(Subsystem&&) = default;
 
@@ -158,7 +160,7 @@ class Subsystem : public ErrorBase, public SendableBase {
 
   Command* m_currentCommand = nullptr;
   bool m_currentCommandChanged = true;
-  Command* m_defaultCommand = nullptr;
+  std::unique_ptr<Command> m_defaultCommand;
   bool m_initializedDefaultCommand = false;
 
  public:

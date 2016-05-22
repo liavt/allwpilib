@@ -7,10 +7,13 @@
 
 #pragma once
 
+#include <memory>
+
+#include "frc/commands/Command.h"
+
 namespace frc {
 
 class Trigger;
-class Command;
 
 class ButtonScheduler {
  public:
@@ -26,7 +29,7 @@ class ButtonScheduler {
  protected:
   bool m_pressedLast;
   Trigger* m_button;
-  Command* m_command;
+  std::unique_ptr<Command> m_command;
 };
 
 }  // namespace frc

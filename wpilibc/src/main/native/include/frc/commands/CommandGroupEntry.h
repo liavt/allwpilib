@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 namespace frc {
 
 class Command;
@@ -28,7 +30,7 @@ class CommandGroupEntry {
   bool IsTimedOut() const;
 
   double m_timeout = -1.0;
-  Command* m_command = nullptr;
+  std::unique_ptr<Command> m_command;
   Sequence m_state = kSequence_InSequence;
 };
 
