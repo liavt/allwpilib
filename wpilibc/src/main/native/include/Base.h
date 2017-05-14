@@ -51,6 +51,11 @@ struct HasBeenMoved {
   operator bool() const { return moved; }
 };
 
+/**
+ * The default period used in control loops in seconds.
+ */
+static constexpr double kDefaultPeriod = 0.05;
+
 }  // namespace frc
 
 // For backwards compatibility

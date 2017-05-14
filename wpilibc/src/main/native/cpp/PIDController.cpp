@@ -382,7 +382,7 @@ void PIDController::SetContinuous(bool continuous) {
  * Sets the maximum and minimum values expected from the input.
  *
  * @param minimumInput the minimum value expected from the input
- * @param maximumInput the maximum value expected from the output
+ * @param maximumInput the maximum value expected from the input
  */
 void PIDController::SetInputRange(double minimumInput, double maximumInput) {
   {

@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  * and derivative calculations. Therefore, the sample rate affects the controller's behavior for a
  * given set of PID constants.
  */
-public class PIDController extends SendableBase implements PIDInterface, Sendable, Controller {
+public class PIDController extends SendableBase implements PIDInterface, Sendable {
 
   public static final double kDefaultPeriod = .05;
   private static int instances = 0;
@@ -857,7 +857,7 @@ public class PIDController extends SendableBase implements PIDInterface, Sendabl
   }
 
   /**
-   * Reset the previous error,, the integral term, and disable the controller.
+   * Reset the previous error, the integral term, and disable the controller.
    */
   @Override
   public void reset() {
