@@ -7,13 +7,12 @@
 
 #pragma once
 
-// clang-format off
-#ifdef _MSC_VER
-#pragma message "warning: Controller.h is deprecated; include frc/Controller.h instead"
-#else
-#warning "Controller.h is deprecated; include frc/Controller.h instead"
-#endif
+#include <frc/controller/PeriodVariantKalmanFilterCoeffs.h>
+#include <frc/controller/PeriodVariantLoop.h>
+#include <frc/controller/PeriodVariantPlantCoeffs.h>
+#include <frc/controller/StateSpaceControllerCoeffs.h>
 
-// clang-format on
-
-#include "frc/Controller.h"
+frc::PeriodVariantPlantCoeffs<1, 1, 1> MakeFlywheelPlantCoeffs();
+frc::StateSpaceControllerCoeffs<1, 1, 1> MakeFlywheelControllerCoeffs();
+frc::PeriodVariantKalmanFilterCoeffs<1, 1, 1> MakeFlywheelObserverCoeffs();
+frc::PeriodVariantLoop<1, 1, 1> MakeFlywheelLoop();
