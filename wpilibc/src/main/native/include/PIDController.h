@@ -14,7 +14,6 @@
 #include <wpi/mutex.h>
 
 #include "Base.h"
-#include "Controller.h"
 #include "Filters/LinearDigitalFilter.h"
 #include "Notifier.h"
 #include "PIDInterface.h"

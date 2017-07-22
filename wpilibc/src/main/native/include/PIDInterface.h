@@ -7,11 +7,9 @@
 
 #pragma once
 
-#include "Controller.h"
-
 namespace frc {
 
-class PIDInterface : public Controller {
+class PIDInterface {
   virtual void SetPID(double p, double i, double d) = 0;
   virtual double GetP() const = 0;
   virtual double GetI() const = 0;
@@ -20,8 +18,17 @@ class PIDInterface : public Controller {
   virtual void SetSetpoint(double setpoint) = 0;
   virtual double GetSetpoint() const = 0;
 
+  /**
+   * Allows the control loop to run
+   */
   virtual void Enable() = 0;
+
+  /**
+   * Stops the control loop from running until explicitly re-enabled by calling
+   * enable()
+   */
   virtual void Disable() = 0;
+
   virtual bool IsEnabled() const = 0;
 
   virtual void Reset() = 0;

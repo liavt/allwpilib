@@ -17,6 +17,8 @@ static_assert(0,
 static_assert(0, "Visual Studio 2015 or greater required.");
 #endif
 
+#include <HAL/cpp/as_const.h>
+
 #define DEFAULT_MOVE_CONSTRUCTOR(ClassName) ClassName(ClassName&&) = default
 
 namespace frc {
