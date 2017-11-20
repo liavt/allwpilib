@@ -7,14 +7,13 @@
 
 #pragma once
 
-#include <memory>
+#include <functional>
 #include <vector>
 
 #include <wpi/ArrayRef.h>
-#include <wpi/deprecated.h>
 
+#include "frc/PIDSource.h"
 #include "frc/circular_buffer.h"
-#include "frc/filters/Filter.h"
 
 namespace frc {
 
@@ -24,16 +23,16 @@ namespace frc {
  * used types of filters.
  *
  * Filters are of the form:<br>
- *  y[n] = (b0 * x[n] + b1 * x[n-1] + ... + bP * x[n-P]) -
- *         (a0 * y[n-1] + a2 * y[n-2] + ... + aQ * y[n-Q])
+ *  y[n] = (b0 * x[n] + b1 * x[n-1] + … + bP * x[n-P]) -
+ *         (a0 * y[n-1] + a2 * y[n-2] + … + aQ * y[n-Q])
  *
  * Where:<br>
  *  y[n] is the output at time "n"<br>
  *  x[n] is the input at time "n"<br>
  *  y[n-1] is the output from the LAST time step ("n-1")<br>
  *  x[n-1] is the input from the LAST time step ("n-1")<br>
- *  b0...bP are the "feedforward" (FIR) gains<br>
- *  a0...aQ are the "feedback" (IIR) gains<br>
+ *  b0 … bP are the "feedforward" (FIR) gains<br>
+ *  a0 … aQ are the "feedback" (IIR) gains<br>
  * IMPORTANT! Note the "-" sign in front of the feedback term! This is a common
  *            convention in signal processing.
  *
@@ -68,33 +67,19 @@ namespace frc {
  * Combining this with Note 1 - the impetus is on YOU as a developer to make
  * sure PIDGet() gets called at the desired, constant frequency!
  */
-class LinearDigitalFilter : public Filter {
+class LinearFilter : public PIDSource {
  public:
   /**
    * Create a linear FIR or IIR filter.
    *
-   * @param source  The PIDSource object that is used to get values
+   * @param source  The function that is used to get values
    * @param ffGains The "feed forward" or FIR gains
    * @param fbGains The "feed back" or IIR gains
    */
-  WPI_DEPRECATED("Use LinearFilter class instead.")
-  LinearDigitalFilter(PIDSource& source, wpi::ArrayRef<double> ffGains,
-                      wpi::ArrayRef<double> fbGains);
+  LinearFilter(std::function<double()> source, wpi::ArrayRef<double> ffGains,
+               wpi::ArrayRef<double> fbGains);
 
-  /**
-   * Create a linear FIR or IIR filter.
-   *
-   * @param source  The PIDSource object that is used to get values
-   * @param ffGains The "feed forward" or FIR gains
-   * @param fbGains The "feed back" or IIR gains
-   */
-  WPI_DEPRECATED("Use LinearFilter class instead.")
-  LinearDigitalFilter(std::shared_ptr<PIDSource> source,
-                      wpi::ArrayRef<double> ffGains,
-                      wpi::ArrayRef<double> fbGains);
-
-  LinearDigitalFilter(LinearDigitalFilter&&) = default;
-  LinearDigitalFilter& operator=(LinearDigitalFilter&&) = default;
+  virtual ~LinearFilter() = default;
 
   // Static methods to create commonly used filters
   /**
@@ -104,12 +89,13 @@ class LinearDigitalFilter : public Filter {
    *
    * This filter is stable for time constants greater than zero.
    *
-   * @param source       The PIDSource object that is used to get values
-   * @param timeConstant The discrete-time time constant in seconds
-   * @param period       The period in seconds between samples taken by the user
+   * @param source        The function that is used to get values
+   * @param timeConstant  The discrete-time time constant in seconds
+   * @param period        The period in seconds between samples taken by the
+   *                      user
    */
-  static LinearDigitalFilter SinglePoleIIR(PIDSource& source,
-                                           double timeConstant, double period);
+  static LinearFilter SinglePoleIIR(std::function<double()> source,
+                                    double timeConstant, double period);
 
   /**
    * Creates a first-order high-pass filter of the form:<br>
@@ -118,12 +104,12 @@ class LinearDigitalFilter : public Filter {
    *
    * This filter is stable for time constants greater than zero.
    *
-   * @param source       The PIDSource object that is used to get values
+   * @param source       The function that is used to get values
    * @param timeConstant The discrete-time time constant in seconds
    * @param period       The period in seconds between samples taken by the user
    */
-  static LinearDigitalFilter HighPass(PIDSource& source, double timeConstant,
-                                      double period);
+  static LinearFilter HighPass(std::function<double()> source,
+                               double timeConstant, double period);
 
   /**
    * Creates a K-tap FIR moving average filter of the form:<br>
@@ -131,68 +117,29 @@ class LinearDigitalFilter : public Filter {
    *
    * This filter is always stable.
    *
-   * @param source The PIDSource object that is used to get values
+   * @param source The function that is used to get values
    * @param taps   The number of samples to average over. Higher = smoother but
    *               slower
    */
-  static LinearDigitalFilter MovingAverage(PIDSource& source, int taps);
+  static LinearFilter MovingAverage(std::function<double()> source, int taps);
 
   /**
-   * Creates a one-pole IIR low-pass filter of the form:<br>
-   *   y[n] = (1 - gain) * x[n] + gain * y[n-1]<br>
-   * where gain = e<sup>-dt / T</sup>, T is the time constant in seconds
-   *
-   * This filter is stable for time constants greater than zero.
-   *
-   * @param source       The PIDSource object that is used to get values
-   * @param timeConstant The discrete-time time constant in seconds
-   * @param period       The period in seconds between samples taken by the user
+   * Reset the filter state.
    */
-  static LinearDigitalFilter SinglePoleIIR(std::shared_ptr<PIDSource> source,
-                                           double timeConstant, double period);
-
-  /**
-   * Creates a first-order high-pass filter of the form:<br>
-   *   y[n] = gain * x[n] + (-gain) * x[n-1] + gain * y[n-1]<br>
-   * where gain = e<sup>-dt / T</sup>, T is the time constant in seconds
-   *
-   * This filter is stable for time constants greater than zero.
-   *
-   * @param source       The PIDSource object that is used to get values
-   * @param timeConstant The discrete-time time constant in seconds
-   * @param period       The period in seconds between samples taken by the user
-   */
-  static LinearDigitalFilter HighPass(std::shared_ptr<PIDSource> source,
-                                      double timeConstant, double period);
-
-  /**
-   * Creates a K-tap FIR moving average filter of the form:<br>
-   *   y[n] = 1/k * (x[k] + x[k-1] + … + x[0])
-   *
-   * This filter is always stable.
-   *
-   * @param source The PIDSource object that is used to get values
-   * @param taps   The number of samples to average over. Higher = smoother but
-   *               slower
-   */
-  static LinearDigitalFilter MovingAverage(std::shared_ptr<PIDSource> source,
-                                           int taps);
-
-  // Filter interface
-  double Get() const override;
-  void Reset() override;
+  void Reset();
 
   // PIDSource interface
   /**
-   * Calculates the next value of the filter
+   * Calculates the next value of the filter.
    *
    * @return The filtered value at this step
    */
   double PIDGet() override;
 
  private:
-  circular_buffer<double> m_inputs;
-  circular_buffer<double> m_outputs;
+  std::function<double()> m_source;
+  circular_buffer<double> m_inputs{0};
+  circular_buffer<double> m_outputs{0};
   std::vector<double> m_inputGains;
   std::vector<double> m_outputGains;
 };

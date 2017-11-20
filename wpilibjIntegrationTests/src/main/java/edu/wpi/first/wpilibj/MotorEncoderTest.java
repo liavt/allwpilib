@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.fixtures.MotorEncoderFixture;
 import edu.wpi.first.wpilibj.test.AbstractComsSetup;
 import edu.wpi.first.wpilibj.test.TestBench;
@@ -195,7 +194,7 @@ public class MotorEncoderTest extends AbstractComsSetup {
   @Test
   public void testVelocityPIDController() {
     me.getEncoder().setPIDSourceType(PIDSourceType.kRate);
-    LinearDigitalFilter filter = LinearDigitalFilter.movingAverage(me.getEncoder(), 50);
+    LinearFilter filter = LinearFilter.movingAverage(me.getEncoder()::getDistance, 50);
     PIDController pid =
         new PIDController(1e-5, 0.0, 3e-5, 8e-5, filter, me.getMotor());
     pid.setAbsoluteTolerance(200);
@@ -232,5 +231,4 @@ public class MotorEncoderTest extends AbstractComsSetup {
     assertTrue(me.getType() + " Encoder.getStopped() returned false after the motor was reset.", me
         .getEncoder().getStopped());
   }
-
 }

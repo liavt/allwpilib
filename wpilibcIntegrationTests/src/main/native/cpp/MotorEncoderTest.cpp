@@ -8,11 +8,11 @@
 #include "TestBench.h"
 #include "frc/Encoder.h"
 #include "frc/Jaguar.h"
+#include "frc/LinearFilter.h"
 #include "frc/PIDController.h"
 #include "frc/Talon.h"
 #include "frc/Timer.h"
 #include "frc/Victor.h"
-#include "frc/filters/LinearDigitalFilter.h"
 #include "gtest/gtest.h"
 
 using namespace frc;
@@ -45,7 +45,6 @@ class MotorEncoderTest : public testing::TestWithParam<MotorEncoderTestType> {
  protected:
   SpeedController* m_speedController;
   Encoder* m_encoder;
-  LinearDigitalFilter* m_filter;
 
   void SetUp() override {
     switch (GetParam()) {
@@ -67,20 +66,16 @@ class MotorEncoderTest : public testing::TestWithParam<MotorEncoderTestType> {
                                 TestBench::kTalonEncoderChannelB);
         break;
     }
-    m_filter = new LinearDigitalFilter(
-        LinearDigitalFilter::MovingAverage(*m_encoder, 50));
   }
 
   void TearDown() override {
     delete m_speedController;
     delete m_encoder;
-    delete m_filter;
   }
 
   void Reset() {
     m_speedController->Set(0.0);
     m_encoder->Reset();
-    m_filter->Reset();
   }
 };
 
@@ -139,7 +134,6 @@ TEST_P(MotorEncoderTest, ClampSpeed) {
 TEST_P(MotorEncoderTest, PositionPIDController) {
   Reset();
   double goal = 1000;
-  m_encoder->SetPIDSourceType(PIDSourceType::kDisplacement);
   PIDController pid(0.001, 0.0005, 0.0, m_encoder, m_speedController);
   pid.SetAbsoluteTolerance(50.0);
   pid.SetOutputRange(-0.2, 0.2);
@@ -163,8 +157,9 @@ TEST_P(MotorEncoderTest, PositionPIDController) {
 TEST_P(MotorEncoderTest, VelocityPIDController) {
   Reset();
 
-  m_encoder->SetPIDSourceType(PIDSourceType::kRate);
-  PIDController pid(1e-5, 0.0, 3e-5, 8e-5, m_filter, m_speedController);
+  auto filter =
+      LinearFilter::MovingAverage([&] { return m_encoder->GetRate(); }, 50);
+  PIDController pid(1e-5, 0.0, 3e-5, 8e-5, filter, *m_speedController);
   pid.SetAbsoluteTolerance(200.0);
   pid.SetOutputRange(-0.3, 0.3);
   pid.SetSetpoint(600);

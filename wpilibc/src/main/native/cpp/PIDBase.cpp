@@ -28,20 +28,16 @@ PIDBase::PIDBase(double Kp, double Ki, double Kd, PIDSource& source,
 
 PIDBase::PIDBase(double Kp, double Ki, double Kd, double Kf, PIDSource& source,
                  PIDOutput& output)
-    : SendableBase(false) {
+    : SendableBase(false), m_pidOutput(output), m_origSource(source) {
   m_P = Kp;
   m_I = Ki;
   m_D = Kd;
   m_F = Kf;
 
-  // Save original source
-  m_origSource = std::shared_ptr<PIDSource>(&source, NullDeleter<PIDSource>());
-
-  // Create LinearDigitalFilter with original source as its source argument
-  m_filter = LinearDigitalFilter::MovingAverage(m_origSource, 1);
+  // Create LinearFilter with original source as its source argument
+  m_filter =
+      LinearFilter::MovingAverage([&] { return m_origSource.PIDGet(); }, 1);
   m_pidInput = &m_filter;
-
-  m_pidOutput = &output;
 
   m_setpointTimer.Start();
 
@@ -201,8 +197,9 @@ void PIDBase::SetPercentTolerance(double percent) {
 void PIDBase::SetToleranceBuffer(int bufLength) {
   std::lock_guard<wpi::mutex> lock(m_thisMutex);
 
-  // Create LinearDigitalFilter with original source as its source argument
-  m_filter = LinearDigitalFilter::MovingAverage(m_origSource, bufLength);
+  // Create LinearFilter with original source as its source argument
+  m_filter = LinearFilter::MovingAverage([&] { return m_origSource.PIDGet(); },
+                                         bufLength);
   m_pidInput = &m_filter;
 }
 
@@ -249,8 +246,6 @@ void PIDBase::InitSendable(SendableBuilder& builder) {
 }
 
 void PIDBase::Calculate() {
-  if (m_origSource == nullptr || m_pidOutput == nullptr) return;
-
   bool enabled;
   {
     std::lock_guard<wpi::mutex> lock(m_thisMutex);
@@ -321,7 +316,7 @@ void PIDBase::Calculate() {
         // Don't block other PIDBase operations on PIDWrite()
         mainLock.unlock();
 
-        m_pidOutput->PIDWrite(result);
+        m_pidOutput.PIDWrite(result);
       }
     }
 

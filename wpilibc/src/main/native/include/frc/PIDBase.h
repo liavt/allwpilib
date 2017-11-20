@@ -14,11 +14,11 @@
 #include <wpi/mutex.h>
 
 #include "frc/Base.h"
+#include "frc/LinearFilter.h"
 #include "frc/PIDInterface.h"
 #include "frc/PIDOutput.h"
 #include "frc/PIDSource.h"
 #include "frc/Timer.h"
-#include "frc/filters/LinearDigitalFilter.h"
 #include "frc/smartdashboard/SendableBase.h"
 
 namespace frc {
@@ -215,7 +215,7 @@ class PIDBase : public SendableBase, public PIDInterface, public PIDOutput {
    *
    * @return the average error
    */
-  WPI_DEPRECATED("Use a LinearDigitalFilter as the input and GetError().")
+  WPI_DEPRECATED("Use a LinearFilter as the input and GetError().")
   virtual double GetAvgError() const;
 
   /**
@@ -265,7 +265,7 @@ class PIDBase : public SendableBase, public PIDInterface, public PIDOutput {
    *
    * @param bufLength Number of previous cycles to average. Defaults to 1.
    */
-  WPI_DEPRECATED("Use a LinearDigitalFilter as the input.")
+  WPI_DEPRECATED("Use a LinearFilter as the input.")
   virtual void SetToleranceBuffer(int buf = 1);
 
   /**
@@ -311,7 +311,7 @@ class PIDBase : public SendableBase, public PIDInterface, public PIDOutput {
   mutable wpi::mutex m_pidWriteMutex;
 
   PIDSource* m_pidInput;
-  PIDOutput* m_pidOutput;
+  PIDOutput& m_pidOutput;
   Timer m_setpointTimer;
 
   /**
@@ -397,8 +397,8 @@ class PIDBase : public SendableBase, public PIDInterface, public PIDOutput {
   double m_error = 0;
   double m_result = 0;
 
-  std::shared_ptr<PIDSource> m_origSource;
-  LinearDigitalFilter m_filter{nullptr, {}, {}};
+  PIDSource& m_origSource;
+  LinearFilter m_filter{[&] { return m_origSource.PIDGet(); }, {}, {}};
 };
 
 }  // namespace frc

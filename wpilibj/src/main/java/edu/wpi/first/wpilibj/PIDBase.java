@@ -12,7 +12,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.util.BoundaryException;
-import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 import static java.util.Objects.requireNonNull;
@@ -85,7 +84,7 @@ public class PIDBase extends SendableBase implements PIDInterface, PIDOutput {
   private double m_result;
 
   private PIDSource m_origSource;
-  private LinearDigitalFilter m_filter;
+  private LinearFilter m_filter;
 
   protected ReentrantLock m_thisMutex = new ReentrantLock();
 
@@ -171,8 +170,8 @@ public class PIDBase extends SendableBase implements PIDInterface, PIDOutput {
     // Save original source
     m_origSource = source;
 
-    // Create LinearDigitalFilter with original source as its source argument
-    m_filter = LinearDigitalFilter.movingAverage(m_origSource, 1);
+    // Create LinearFilter with original source as its source argument
+    m_filter = LinearFilter.movingAverage(m_origSource::pidGet, 1);
     m_pidInput = m_filter;
 
     m_pidOutput = output;
@@ -731,14 +730,14 @@ public class PIDBase extends SendableBase implements PIDInterface, PIDOutput {
    * erroneous measurements when the mechanism is on target. However, the mechanism will not
    * register as on target for at least the specified bufLength cycles.
    *
-   * @deprecated      Use a LinearDigitalFilter as the input.
+   * @deprecated      Use a LinearFilter as the input.
    * @param bufLength Number of previous cycles to average.
    */
   @Deprecated
   public void setToleranceBuffer(int bufLength) {
     m_thisMutex.lock();
     try {
-      m_filter = LinearDigitalFilter.movingAverage(m_origSource, bufLength);
+      m_filter = LinearFilter.movingAverage(m_origSource::pidGet, bufLength);
       m_pidInput = m_filter;
     } finally {
       m_thisMutex.unlock();

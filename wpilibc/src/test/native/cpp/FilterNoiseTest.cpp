@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "frc/filters/LinearDigitalFilter.h"  // NOLINT(build/include_order)
+#include "frc/LinearFilter.h"  // NOLINT(build/include_order)
 
 #include <cmath>
 #include <functional>
@@ -34,10 +34,10 @@ enum FilterNoiseTestType { TEST_SINGLE_POLE_IIR, TEST_MOVAVG };
 std::ostream& operator<<(std::ostream& os, const FilterNoiseTestType& type) {
   switch (type) {
     case TEST_SINGLE_POLE_IIR:
-      os << "LinearDigitalFilter SinglePoleIIR";
+      os << "LinearFilter SinglePoleIIR";
       break;
     case TEST_MOVAVG:
-      os << "LinearDigitalFilter MovingAverage";
+      os << "LinearFilter MovingAverage";
       break;
   }
 
@@ -56,8 +56,6 @@ class NoiseGenerator : public PIDSource {
       : m_distr(0.0, stdDev) {
     m_dataFunc = dataFunc;
   }
-
-  void SetPIDSourceType(PIDSourceType pidSource) override {}
 
   double Get() { return m_dataFunc(m_count) + m_noise; }
 
@@ -87,24 +85,24 @@ class NoiseGenerator : public PIDSource {
 class FilterNoiseTest : public testing::TestWithParam<FilterNoiseTestType> {
  protected:
   std::unique_ptr<PIDSource> m_filter;
-  std::shared_ptr<NoiseGenerator> m_noise;
+  std::unique_ptr<NoiseGenerator> m_noise;
 
   static double GetData(double t) { return 100.0 * std::sin(2.0 * kPi * t); }
 
   void SetUp() override {
-    m_noise = std::make_shared<NoiseGenerator>(GetData, kStdDev);
+    m_noise = std::make_unique<NoiseGenerator>(GetData, kStdDev);
 
     switch (GetParam()) {
       case TEST_SINGLE_POLE_IIR: {
-        m_filter = std::make_unique<LinearDigitalFilter>(
-            LinearDigitalFilter::SinglePoleIIR(
-                m_noise, kSinglePoleIIRTimeConstant, kFilterStep));
+        m_filter = std::make_unique<LinearFilter>(LinearFilter::SinglePoleIIR(
+            [&] { return m_noise->PIDGet(); }, kSinglePoleIIRTimeConstant,
+            kFilterStep));
         break;
       }
 
       case TEST_MOVAVG: {
-        m_filter = std::make_unique<LinearDigitalFilter>(
-            LinearDigitalFilter::MovingAverage(m_noise, kMovAvgTaps));
+        m_filter = std::make_unique<LinearFilter>(LinearFilter::MovingAverage(
+            [&] { return m_noise->PIDGet(); }, kMovAvgTaps));
         break;
       }
     }

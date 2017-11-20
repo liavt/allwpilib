@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "frc/filters/LinearDigitalFilter.h"  // NOLINT(build/include_order)
+#include "frc/LinearFilter.h"  // NOLINT(build/include_order)
 
 #include <cmath>
 #include <functional>
@@ -39,16 +39,16 @@ enum FilterOutputTestType {
 std::ostream& operator<<(std::ostream& os, const FilterOutputTestType& type) {
   switch (type) {
     case TEST_SINGLE_POLE_IIR:
-      os << "LinearDigitalFilter SinglePoleIIR";
+      os << "LinearFilter SinglePoleIIR";
       break;
     case TEST_HIGH_PASS:
-      os << "LinearDigitalFilter HighPass";
+      os << "LinearFilter HighPass";
       break;
     case TEST_MOVAVG:
-      os << "LinearDigitalFilter MovingAverage";
+      os << "LinearFilter MovingAverage";
       break;
     case TEST_PULSE:
-      os << "LinearDigitalFilter Pulse";
+      os << "LinearFilter Pulse";
       break;
   }
 
@@ -81,7 +81,7 @@ class DataWrapper : public PIDSource {
 class FilterOutputTest : public testing::TestWithParam<FilterOutputTestType> {
  protected:
   std::unique_ptr<PIDSource> m_filter;
-  std::shared_ptr<DataWrapper> m_data;
+  std::unique_ptr<DataWrapper> m_data;
   double m_expectedOutput = 0.0;
 
   static double GetData(double t) {
@@ -99,35 +99,35 @@ class FilterOutputTest : public testing::TestWithParam<FilterOutputTestType> {
   void SetUp() override {
     switch (GetParam()) {
       case TEST_SINGLE_POLE_IIR: {
-        m_data = std::make_shared<DataWrapper>(GetData);
-        m_filter = std::make_unique<LinearDigitalFilter>(
-            LinearDigitalFilter::SinglePoleIIR(
-                m_data, kSinglePoleIIRTimeConstant, kFilterStep));
+        m_data = std::make_unique<DataWrapper>(GetData);
+        m_filter = std::make_unique<LinearFilter>(LinearFilter::SinglePoleIIR(
+            [&] { return m_data->PIDGet(); }, kSinglePoleIIRTimeConstant,
+            kFilterStep));
         m_expectedOutput = kSinglePoleIIRExpectedOutput;
         break;
       }
 
       case TEST_HIGH_PASS: {
-        m_data = std::make_shared<DataWrapper>(GetData);
-        m_filter =
-            std::make_unique<LinearDigitalFilter>(LinearDigitalFilter::HighPass(
-                m_data, kHighPassTimeConstant, kFilterStep));
+        m_data = std::make_unique<DataWrapper>(GetData);
+        m_filter = std::make_unique<LinearFilter>(
+            LinearFilter::HighPass([&] { return m_data->PIDGet(); },
+                                   kHighPassTimeConstant, kFilterStep));
         m_expectedOutput = kHighPassExpectedOutput;
         break;
       }
 
       case TEST_MOVAVG: {
-        m_data = std::make_shared<DataWrapper>(GetData);
-        m_filter = std::make_unique<LinearDigitalFilter>(
-            LinearDigitalFilter::MovingAverage(m_data, kMovAvgTaps));
+        m_data = std::make_unique<DataWrapper>(GetData);
+        m_filter = std::make_unique<LinearFilter>(LinearFilter::MovingAverage(
+            [&] { return m_data->PIDGet(); }, kMovAvgTaps));
         m_expectedOutput = kMovAvgExpectedOutput;
         break;
       }
 
       case TEST_PULSE: {
-        m_data = std::make_shared<DataWrapper>(GetPulseData);
-        m_filter = std::make_unique<LinearDigitalFilter>(
-            LinearDigitalFilter::MovingAverage(m_data, kMovAvgTaps));
+        m_data = std::make_unique<DataWrapper>(GetPulseData);
+        m_filter = std::make_unique<LinearFilter>(LinearFilter::MovingAverage(
+            [&] { return m_data->PIDGet(); }, kMovAvgTaps));
         m_expectedOutput = 0.0;
         break;
       }

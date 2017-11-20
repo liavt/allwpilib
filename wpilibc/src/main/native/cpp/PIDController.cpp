@@ -55,7 +55,7 @@ void PIDController::Disable() {
       m_enabled = false;
     }
 
-    m_pidOutput->PIDWrite(0);
+    m_pidOutput.PIDWrite(0);
   }
 }
 
