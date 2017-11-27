@@ -134,9 +134,18 @@ class IterativeRobotBase : public RobotBase {
   virtual void TestPeriodic();
 
  protected:
+  /**
+   * Constructor for IterativeRobotBase.
+   *
+   * @param period Period in seconds.
+   */
+  explicit IterativeRobotBase(double period);
+
   virtual ~IterativeRobotBase() = default;
 
   void LoopFunc();
+
+  double m_period;
 
  private:
   enum class Mode { kNone, kDisabled, kAutonomous, kTeleop, kTest };

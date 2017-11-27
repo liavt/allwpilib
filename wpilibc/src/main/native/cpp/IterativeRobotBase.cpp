@@ -10,13 +10,18 @@
 #include <cstdio>
 
 #include <HAL/HAL.h>
+#include <wpi/SmallString.h>
 #include <wpi/raw_ostream.h>
 
 #include "Commands/Scheduler.h"
+#include "DriverStation.h"
 #include "LiveWindow/LiveWindow.h"
 #include "SmartDashboard/SmartDashboard.h"
+#include "Timer.h"
 
 using namespace frc;
+
+IterativeRobotBase::IterativeRobotBase(double period) : m_period(period) {}
 
 void IterativeRobotBase::RobotInit() {
   wpi::outs() << "Default " << __FUNCTION__ << "() method... Overload me!\n";
@@ -79,6 +84,8 @@ void IterativeRobotBase::TestPeriodic() {
 }
 
 void IterativeRobotBase::LoopFunc() {
+  double startTime = Timer::GetFPGATimestamp();
+
   // Call the appropriate function depending upon the current robot mode
   if (IsDisabled()) {
     // Call DisabledInit() if we are now just entering disabled mode from
@@ -88,6 +95,7 @@ void IterativeRobotBase::LoopFunc() {
       DisabledInit();
       m_lastMode = Mode::kDisabled;
     }
+
     HAL_ObserveUserProgramDisabled();
     DisabledPeriodic();
   } else if (IsAutonomous()) {
@@ -98,6 +106,7 @@ void IterativeRobotBase::LoopFunc() {
       AutonomousInit();
       m_lastMode = Mode::kAutonomous;
     }
+
     HAL_ObserveUserProgramAutonomous();
     AutonomousPeriodic();
   } else if (IsOperatorControl()) {
@@ -109,6 +118,7 @@ void IterativeRobotBase::LoopFunc() {
       m_lastMode = Mode::kTeleop;
       Scheduler::GetInstance()->SetEnabled(true);
     }
+
     HAL_ObserveUserProgramTeleop();
     TeleopPeriodic();
   } else {
@@ -119,10 +129,39 @@ void IterativeRobotBase::LoopFunc() {
       TestInit();
       m_lastMode = Mode::kTest;
     }
+
     HAL_ObserveUserProgramTest();
     TestPeriodic();
   }
+
+  double modePeriodicElapsed = Timer::GetFPGATimestamp() - startTime;
+
   RobotPeriodic();
   SmartDashboard::UpdateValues();
+
+  double robotPeriodicElapsed =
+      Timer::GetFPGATimestamp() - startTime - modePeriodicElapsed;
+
   LiveWindow::GetInstance()->UpdateValues();
+
+  // Warn on loop time overruns
+  if (modePeriodicElapsed + robotPeriodicElapsed > m_period) {
+    wpi::SmallString<128> str;
+    wpi::raw_svector_ostream buf(str);
+
+    buf << "Loop time of " << m_period << "s overrun\n\t";
+    if (m_lastMode == Mode::kDisabled) {
+      buf << "Disabled";
+    } else if (m_lastMode == Mode::kAutonomous) {
+      buf << "Autonomous";
+    } else if (m_lastMode == Mode::kTeleop) {
+      buf << "Disabled";
+    } else {
+      buf << "Test";
+    }
+    buf << "Periodic(): " << modePeriodicElapsed
+        << "s\n\tRobotPeriodic(): " << robotPeriodicElapsed << "s";
+
+    DriverStation::ReportWarning(str);
+  }
 }

@@ -42,6 +42,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public abstract class IterativeRobotBase extends RobotBase {
+  protected double m_period;
+
   private enum Mode {
     kNone,
     kDisabled,
@@ -51,6 +53,15 @@ public abstract class IterativeRobotBase extends RobotBase {
   }
 
   private Mode m_lastMode = Mode.kNone;
+
+  /**
+   * Constructor for IterativeRobotBase.
+   *
+   * @param period Period in seconds.
+   */
+  protected IterativeRobotBase(double period) {
+    m_period = period;
+  }
 
   /**
    * Provide an alternate "main loop" via startCompetition().
@@ -179,53 +190,85 @@ public abstract class IterativeRobotBase extends RobotBase {
   }
 
   protected void loopFunc() {
+    double startTime = Timer.getFPGATimestamp();
+
     // Call the appropriate function depending upon the current robot mode
     if (isDisabled()) {
-      // call DisabledInit() if we are now just entering disabled mode from
-      // either a different mode or from power-on
+      // Call DisabledInit() if we are now just entering disabled mode from either a different mode
+      // or from power-on.
       if (m_lastMode != Mode.kDisabled) {
         LiveWindow.setEnabled(false);
         disabledInit();
         m_lastMode = Mode.kDisabled;
       }
+
       HAL.observeUserProgramDisabled();
       disabledPeriodic();
     } else if (isAutonomous()) {
-      // call Autonomous_Init() if this is the first time
-      // we've entered autonomous_mode
+      // Call AutonomousInit() if we are now just entering autonomous mode from either a different
+      // mode or from power-on.
       if (m_lastMode != Mode.kAutonomous) {
         LiveWindow.setEnabled(false);
-        // KBS NOTE: old code reset all PWMs and relays to "safe values"
-        // whenever entering autonomous mode, before calling
-        // "Autonomous_Init()"
         autonomousInit();
         m_lastMode = Mode.kAutonomous;
       }
+
       HAL.observeUserProgramAutonomous();
       autonomousPeriodic();
     } else if (isOperatorControl()) {
-      // call Teleop_Init() if this is the first time
-      // we've entered teleop_mode
+      // Call TeleopInit() if we are now just entering teleop mode from either a different mode or
+      // from power-on.
       if (m_lastMode != Mode.kTeleop) {
         LiveWindow.setEnabled(false);
         teleopInit();
         m_lastMode = Mode.kTeleop;
       }
+
       HAL.observeUserProgramTeleop();
       teleopPeriodic();
     } else {
-      // call TestInit() if we are now just entering test mode from either
-      // a different mode or from power-on
+      // Call TestInit() if we are now just entering test mode from either a different mode or from
+      // power-on.
       if (m_lastMode != Mode.kTest) {
         LiveWindow.setEnabled(true);
         testInit();
         m_lastMode = Mode.kTest;
       }
+
       HAL.observeUserProgramTest();
       testPeriodic();
     }
+
+    double modePeriodicElapsed = Timer.getFPGATimestamp() - startTime;
+
     robotPeriodic();
     SmartDashboard.updateValues();
+
+    double robotPeriodicElapsed = Timer.getFPGATimestamp() - startTime - modePeriodicElapsed;
+
     LiveWindow.updateValues();
+
+    // Warn on loop time overruns
+    if (modePeriodicElapsed + robotPeriodicElapsed > m_period) {
+      StringBuilder buf = new StringBuilder();
+
+      buf.append("Loop time of ").append(m_period).append("s overrun\n\t");
+      if (m_lastMode == Mode.kDisabled) {
+        buf.append("disabled");
+      } else if (m_lastMode == Mode.kAutonomous) {
+        buf.append("autonomous");
+      } else if (m_lastMode == Mode.kTeleop) {
+        buf.append("teleop");
+      } else {
+        buf.append("test");
+      }
+      buf.append("Periodic(): ")
+        .append(modePeriodicElapsed)
+        .append("s\n\trobotPeriodic(): ")
+        .append(robotPeriodicElapsed)
+        .append('s');
+
+      DriverStation.reportWarning(buf.toString(), false);
+    }
   }
 }
