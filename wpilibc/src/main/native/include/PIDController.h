@@ -10,6 +10,7 @@
 #include <memory>
 #include <string>
 
+#include <Eigen/Core>
 #include <wpi/deprecated.h>
 #include <wpi/mutex.h>
 
@@ -37,6 +38,8 @@ class PIDOutput;
  */
 class PIDController : public SendableBase, public PIDInterface {
  public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   PIDController(double p, double i, double d, PIDSource* source,
                 PIDOutput* output, double period = 0.05);
   PIDController(double p, double i, double d, double f, PIDSource* source,
@@ -71,19 +74,11 @@ class PIDController : public SendableBase, public PIDInterface {
 
   virtual double GetError() const;
 
-  WPI_DEPRECATED("Use a LinearDigitalFilter as the input and GetError().")
-  virtual double GetAvgError() const;
-
   virtual void SetPIDSourceType(PIDSourceType pidSource);
   virtual PIDSourceType GetPIDSourceType() const;
 
-  WPI_DEPRECATED("Use SetPercentTolerance() instead.")
-  virtual void SetTolerance(double percent);
   virtual void SetAbsoluteTolerance(double absValue);
   virtual void SetPercentTolerance(double percentValue);
-
-  WPI_DEPRECATED("Use a LinearDigitalFilter as the input.")
-  virtual void SetToleranceBuffer(int buf = 1);
 
   virtual bool OnTarget() const;
 
@@ -152,6 +147,22 @@ class PIDController : public SendableBase, public PIDInterface {
 
   // The percetage or absolute error that is considered on target.
   double m_tolerance = 0.05;
+
+  static constexpr double States = 4;
+  static constexpr double Inputs = 1;
+  static constexpr double Outputs = 1;
+
+  Eigen::Matrix<double, States, States> m_A;
+
+  // States are position, velocity, acceleration, integral of position
+  Eigen::Matrix<double, States, 1> m_R = {0.0, 0.0, 0.0, 0.0};
+  Eigen::Matrix<double, States, 1> m_X = {0.0, 0.0, 0.0, 0.0};
+
+  // Controller gains used for position controller
+  Eigen::Matrix<double, Inputs, States> m_positionK;
+
+  // Controller gains used for velocity controller
+  Eigen::Matrix<double, Inputs, States> m_velocityK;
 
   double m_setpoint = 0;
   double m_prevSetpoint = 0;

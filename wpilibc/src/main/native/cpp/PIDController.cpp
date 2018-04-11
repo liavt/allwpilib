@@ -64,6 +64,33 @@ PIDController::PIDController(double Kp, double Ki, double Kd, double Kf,
   m_D = Kd;
   m_F = Kf;
 
+  m_A(0, 0) = 1.0;
+  m_A(0, 1) = period;
+  m_A(0, 2) = 0.0;
+  m_A(0, 3) = 0.0;
+  m_A(1, 0) = 0.0;
+  m_A(1, 1) = 1.0;
+  m_A(1, 2) = period;
+  m_A(1, 3) = 0.0;
+  m_A(2, 0) = 0.0;
+  m_A(2, 1) = 0.0;
+  m_A(2, 2) = 1.0;
+  m_A(2, 3) = 0.0;
+  m_A(3, 0) = 0.0;
+  m_A(3, 1) = 0.0;
+  m_A(3, 2) = 0.0;
+  m_A(3, 3) = 1.0;
+
+  m_positionK(0, 0) = Kp;
+  m_positionK(0, 1) = Kd;
+  m_positionK(0, 2) = 0.0;
+  m_positionK(0, 3) = Ki;
+
+  m_velocityK(0, 0) = Kd;
+  m_velocityK(0, 1) = Kp;
+  m_velocityK(0, 2) = 0.0;
+  m_velocityK(0, 3) = 0.0;
+
   // Save original source
   m_origSource = std::shared_ptr<PIDSource>(source, NullDeleter<PIDSource>());
 
@@ -162,6 +189,8 @@ void PIDController::Calculate() {
       D = m_D;
       minimumOutput = m_minimumOutput;
       maximumOutput = m_maximumOutput;
+
+      m_X = m_A * m_X;
 
       prevError = m_prevError;
       error = GetContinuousError(m_setpoint - input);
@@ -463,16 +492,6 @@ double PIDController::GetError() const {
 }
 
 /**
- * Returns the current average of the error over the past few iterations.
- *
- * You can specify the number of iterations to average with SetToleranceBuffer()
- * (defaults to 1). This is the same value that is used for OnTarget().
- *
- * @return the average error
- */
-double PIDController::GetAvgError() const { return GetError(); }
-
-/**
  * Sets what type of input the PID controller will use.
  */
 void PIDController::SetPIDSourceType(PIDSourceType pidSource) {
@@ -485,18 +504,6 @@ void PIDController::SetPIDSourceType(PIDSourceType pidSource) {
  */
 PIDSourceType PIDController::GetPIDSourceType() const {
   return m_pidInput->GetPIDSourceType();
-}
-
-/*
- * Set the percentage error which is considered tolerable for use with
- * OnTarget.
- *
- * @param percentage error which is tolerable
- */
-void PIDController::SetTolerance(double percent) {
-  std::lock_guard<wpi::mutex> lock(m_thisMutex);
-  m_toleranceType = kPercentTolerance;
-  m_tolerance = percent;
 }
 
 /*
@@ -521,24 +528,6 @@ void PIDController::SetPercentTolerance(double percent) {
   std::lock_guard<wpi::mutex> lock(m_thisMutex);
   m_toleranceType = kPercentTolerance;
   m_tolerance = percent;
-}
-
-/*
- * Set the number of previous error samples to average for tolerancing. When
- * determining whether a mechanism is on target, the user may want to use a
- * rolling average of previous measurements instead of a precise position or
- * velocity. This is useful for noisy sensors which return a few erroneous
- * measurements when the mechanism is on target. However, the mechanism will
- * not register as on target for at least the specified bufLength cycles.
- *
- * @param bufLength Number of previous cycles to average. Defaults to 1.
- */
-void PIDController::SetToleranceBuffer(int bufLength) {
-  std::lock_guard<wpi::mutex> lock(m_thisMutex);
-
-  // Create LinearDigitalFilter with original source as its source argument
-  m_filter = LinearDigitalFilter::MovingAverage(m_origSource, bufLength);
-  m_pidInput = &m_filter;
 }
 
 /*
