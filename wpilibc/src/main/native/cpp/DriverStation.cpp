@@ -368,20 +368,6 @@ bool DriverStation::IsFMSAttached() const {
   return controlWord.fmsAttached;
 }
 
-bool DriverStation::IsSysActive() const {
-  int32_t status = 0;
-  bool retVal = HAL_GetSystemActive(&status);
-  wpi_setErrorWithContext(status, HAL_GetErrorMessage(status));
-  return retVal;
-}
-
-bool DriverStation::IsBrownedOut() const {
-  int32_t status = 0;
-  bool retVal = HAL_GetBrownedOut(&status);
-  wpi_setErrorWithContext(status, HAL_GetErrorMessage(status));
-  return retVal;
-}
-
 std::string DriverStation::GetGameSpecificMessage() const {
   HAL_MatchInfo info;
   HAL_GetMatchInfo(&info);

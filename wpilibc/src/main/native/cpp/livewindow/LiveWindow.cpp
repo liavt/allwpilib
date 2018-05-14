@@ -60,66 +60,6 @@ LiveWindow* LiveWindow::GetInstance() {
   return &instance;
 }
 
-void LiveWindow::Run() { UpdateValues(); }
-
-void LiveWindow::AddSensor(const wpi::Twine& subsystem, const wpi::Twine& name,
-                           Sendable* component) {
-  Add(component);
-  component->SetName(subsystem, name);
-}
-
-void LiveWindow::AddSensor(const wpi::Twine& subsystem, const wpi::Twine& name,
-                           Sendable& component) {
-  Add(&component);
-  component.SetName(subsystem, name);
-}
-
-void LiveWindow::AddSensor(const wpi::Twine& subsystem, const wpi::Twine& name,
-                           std::shared_ptr<Sendable> component) {
-  Add(component);
-  component->SetName(subsystem, name);
-}
-
-void LiveWindow::AddActuator(const wpi::Twine& subsystem,
-                             const wpi::Twine& name, Sendable* component) {
-  Add(component);
-  component->SetName(subsystem, name);
-}
-
-void LiveWindow::AddActuator(const wpi::Twine& subsystem,
-                             const wpi::Twine& name, Sendable& component) {
-  Add(&component);
-  component.SetName(subsystem, name);
-}
-
-void LiveWindow::AddActuator(const wpi::Twine& subsystem,
-                             const wpi::Twine& name,
-                             std::shared_ptr<Sendable> component) {
-  Add(component);
-  component->SetName(subsystem, name);
-}
-
-void LiveWindow::AddSensor(const wpi::Twine& type, int channel,
-                           Sendable* component) {
-  Add(component);
-  component->SetName("Ungrouped",
-                     type + Twine('[') + Twine(channel) + Twine(']'));
-}
-
-void LiveWindow::AddActuator(const wpi::Twine& type, int channel,
-                             Sendable* component) {
-  Add(component);
-  component->SetName("Ungrouped",
-                     type + Twine('[') + Twine(channel) + Twine(']'));
-}
-
-void LiveWindow::AddActuator(const wpi::Twine& type, int module, int channel,
-                             Sendable* component) {
-  Add(component);
-  component->SetName("Ungrouped", type + Twine('[') + Twine(module) +
-                                      Twine(',') + Twine(channel) + Twine(']'));
-}
-
 void LiveWindow::Add(std::shared_ptr<Sendable> sendable) {
   std::lock_guard<wpi::mutex> lock(m_impl->mutex);
   auto& comp = m_impl->components[sendable.get()];

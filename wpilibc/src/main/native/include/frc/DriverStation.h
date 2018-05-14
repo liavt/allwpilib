@@ -245,27 +245,6 @@ class DriverStation : public ErrorBase {
   bool IsFMSAttached() const;
 
   /**
-   * Check if the FPGA outputs are enabled.
-   *
-   * The outputs may be disabled if the robot is disabled or e-stopped, the
-   * watchdog has expired, or if the roboRIO browns out.
-   *
-   * @return True if the FPGA outputs are enabled.
-   * @deprecated Use RobotController static class method
-   */
-  WPI_DEPRECATED("Use RobotController static class method")
-  bool IsSysActive() const;
-
-  /**
-   * Check if the system is browned out.
-   *
-   * @return True if the system is browned out
-   * @deprecated Use RobotController static class method
-   */
-  WPI_DEPRECATED("Use RobotController static class method")
-  bool IsBrownedOut() const;
-
-  /**
    * Returns the game specific message provided by the FMS.
    *
    * @return A string containing the game specific message.

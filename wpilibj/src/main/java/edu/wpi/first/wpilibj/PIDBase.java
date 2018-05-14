@@ -645,24 +645,6 @@ public class PIDBase extends SendableBase implements PIDInterface, PIDOutput {
   }
 
   /**
-   * Returns the current difference of the error over the past few iterations. You can specify the
-   * number of iterations to average with setToleranceBuffer() (defaults to 1). getAvgError() is
-   * used for the onTarget() function.
-   *
-   * @deprecated Use getError(), which is now already filtered.
-   * @return     the current average of the error
-   */
-  @Deprecated
-  public double getAvgError() {
-    m_thisMutex.lock();
-    try {
-      return getError();
-    } finally {
-      m_thisMutex.unlock();
-    }
-  }
-
-  /**
    * Sets what type of input the PID controller will use.
    *
    * @param pidSource the type of input
@@ -678,21 +660,6 @@ public class PIDBase extends SendableBase implements PIDInterface, PIDOutput {
    */
   PIDSourceType getPIDSourceType() {
     return m_pidInput.getPIDSourceType();
-  }
-
-  /**
-   * Set the PID tolerance using a Tolerance object. Tolerance can be specified as a percentage of
-   * the range or as an absolute value. The Tolerance object encapsulates those options in an
-   * object. Use it by creating the type of tolerance that you want to use: setTolerance(new
-   * PIDController.AbsoluteTolerance(0.1))
-   *
-   * @deprecated      Use setPercentTolerance() instead.
-   * @param tolerance A tolerance object of the right type, e.g. PercentTolerance or
-   *                  AbsoluteTolerance
-   */
-  @Deprecated
-  public void setTolerance(Tolerance tolerance) {
-    m_tolerance = tolerance;
   }
 
   /**

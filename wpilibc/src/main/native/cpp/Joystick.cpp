@@ -40,10 +40,6 @@ void Joystick::SetThrottleChannel(int channel) {
   m_axes[Axis::kThrottle] = channel;
 }
 
-void Joystick::SetAxisChannel(AxisType axis, int channel) {
-  m_axes[axis] = channel;
-}
-
 int Joystick::GetXChannel() const { return m_axes[Axis::kX]; }
 
 int Joystick::GetYChannel() const { return m_axes[Axis::kY]; }
@@ -70,24 +66,6 @@ double Joystick::GetThrottle() const {
   return GetRawAxis(m_axes[Axis::kThrottle]);
 }
 
-double Joystick::GetAxis(AxisType axis) const {
-  switch (axis) {
-    case kXAxis:
-      return GetX();
-    case kYAxis:
-      return GetY();
-    case kZAxis:
-      return GetZ();
-    case kTwistAxis:
-      return GetTwist();
-    case kThrottleAxis:
-      return GetThrottle();
-    default:
-      wpi_setWPIError(BadJoystickAxis);
-      return 0.0;
-  }
-}
-
 bool Joystick::GetTrigger() const { return GetRawButton(Button::kTrigger); }
 
 bool Joystick::GetTriggerPressed() {
@@ -103,22 +81,6 @@ bool Joystick::GetTop() const { return GetRawButton(Button::kTop); }
 bool Joystick::GetTopPressed() { return GetRawButtonPressed(Button::kTop); }
 
 bool Joystick::GetTopReleased() { return GetRawButtonReleased(Button::kTop); }
-
-Joystick* Joystick::GetStickForPort(int port) {
-  static std::array<std::unique_ptr<Joystick>, DriverStation::kJoystickPorts>
-      joysticks{};
-  auto stick = joysticks[port].get();
-  if (stick == nullptr) {
-    joysticks[port] = std::make_unique<Joystick>(port);
-    stick = joysticks[port].get();
-  }
-  return stick;
-}
-
-bool Joystick::GetButton(ButtonType button) const {
-  int temp = button;
-  return GetRawButton(static_cast<Button>(temp));
-}
 
 double Joystick::GetMagnitude() const {
   return std::sqrt(std::pow(GetX(), 2) + std::pow(GetY(), 2));

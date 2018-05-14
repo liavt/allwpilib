@@ -21,8 +21,6 @@ void Wait(double seconds) {
   std::this_thread::sleep_for(std::chrono::duration<double>(seconds));
 }
 
-double GetClock() { return Timer::GetFPGATimestamp(); }
-
 double GetTime() {
   using std::chrono::duration;
   using std::chrono::duration_cast;

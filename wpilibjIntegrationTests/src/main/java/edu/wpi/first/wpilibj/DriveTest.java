@@ -19,10 +19,10 @@ import edu.wpi.first.wpilibj.test.AbstractComsSetup;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests the eqivilance of RobotDrive and DifferentialDrive/MecanumDrive.
+ * Tests DifferentialDrive and MecanumDrive.
  */
-public class RobotDriveTest extends AbstractComsSetup {
-  private static final Logger logger = Logger.getLogger(RobotDriveTest.class.getName());
+public class DriveTest extends AbstractComsSetup {
+  private static final Logger logger = Logger.getLogger(DriveTest.class.getName());
 
   private static MockSpeedController m_rdFrontLeft = new MockSpeedController();
   private static MockSpeedController m_rdRearLeft = new MockSpeedController();

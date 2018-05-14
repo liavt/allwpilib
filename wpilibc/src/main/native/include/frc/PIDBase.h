@@ -207,18 +207,6 @@ class PIDBase : public SendableBase, public PIDInterface, public PIDOutput {
   virtual double GetError() const;
 
   /**
-   * Returns the current average of the error over the past few iterations.
-   *
-   * You can specify the number of iterations to average with
-   * SetToleranceBuffer() (defaults to 1). This is the same value that is used
-   * for OnTarget().
-   *
-   * @return the average error
-   */
-  WPI_DEPRECATED("Use a LinearDigitalFilter as the input and GetError().")
-  virtual double GetAvgError() const;
-
-  /**
    * Sets what type of input the PID controller will use.
    */
   virtual void SetPIDSourceType(PIDSourceType pidSource);
@@ -229,15 +217,6 @@ class PIDBase : public SendableBase, public PIDInterface, public PIDOutput {
    * @return the PID controller input type
    */
   virtual PIDSourceType GetPIDSourceType() const;
-
-  /**
-   * Set the percentage error which is considered tolerable for use with
-   * OnTarget.
-   *
-   * @param percentage error which is tolerable
-   */
-  WPI_DEPRECATED("Use SetPercentTolerance() instead.")
-  virtual void SetTolerance(double percent);
 
   /**
    * Set the absolute error which is considered tolerable for use with
@@ -311,7 +290,7 @@ class PIDBase : public SendableBase, public PIDInterface, public PIDOutput {
   mutable wpi::mutex m_pidWriteMutex;
 
   PIDSource* m_pidInput;
-  PIDOutput* m_pidOutput;
+  PIDOutput& m_pidOutput;
   Timer m_setpointTimer;
 
   /**
@@ -397,8 +376,8 @@ class PIDBase : public SendableBase, public PIDInterface, public PIDOutput {
   double m_error = 0;
   double m_result = 0;
 
-  std::shared_ptr<PIDSource> m_origSource;
-  LinearDigitalFilter m_filter{nullptr, {}, {}};
+  PIDSource& m_origSource;
+  LinearDigitalFilter m_filter{m_origSource, {}, {}};
 };
 
 }  // namespace frc

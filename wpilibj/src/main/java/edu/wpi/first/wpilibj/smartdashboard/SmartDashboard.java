@@ -17,7 +17,6 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.NamedSendable;
 import edu.wpi.first.wpilibj.Sendable;
 
 /**
@@ -85,7 +84,7 @@ public class SmartDashboard {
   }
 
   /**
-   * Maps the specified key (where the key is the name of the {@link NamedSendable}
+   * Maps the specified key (where the key is the name of the {@link Sendable}
    * to the specified value in this table. The value can be retrieved by
    * calling the get method with a key that is equal to the original key.
    *

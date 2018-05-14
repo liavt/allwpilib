@@ -29,16 +29,6 @@ using TimerInterruptHandler = void (*)(void* param);
 void Wait(double seconds);
 
 /**
- * Return the FPGA system clock time in seconds.
- *
- * This is deprecated and just forwards to Timer::GetFPGATimestamp().
- *
- * @return Robot running time in seconds.
- */
-WPI_DEPRECATED("Use Timer::GetFPGATimestamp() instead.")
-double GetClock();
-
-/**
  * @brief  Gives real-time clock system time with nanosecond resolution
  * @return The time, just in case you want the robot to start autonomous at 8pm
  *         on Saturday.
