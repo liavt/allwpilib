@@ -81,7 +81,7 @@ jobs:
           git checkout -b master
         displayName: 'Install Dependencies'
       - script: |
-          wpiformat -y 2018 -clang 5.0
+          wpiformat -y 2019 -clang 5.0
         displayName: 'Run WPIFormat'
         failOnStderr: true
       - script: |
